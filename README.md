@@ -83,7 +83,7 @@ The output of this will be a dataframe that has all of the relevant information 
 
 6. Here is an example snippet:
 ```R
- wonderful_temp = data_qc(dataset = "wonderful_data", study = "Brilliant Grad Student et al.", timepoint_list = wonderful_timepoint_list, scn_calc = TRUE, species = "mouse", sample_type "in vivo", isolation = "LP-FACS", sequencing = "mcSCRB-seq", mapping = "zUMIs", datatype = "UMIs", doi = "doi:12345", other_meta = NA)
+ wonderful_temp = data_qc(dataset = "wonderful_data", study = "Brilliant Grad Student et al.", timepoint_list = wonderful_timepoint_list, scn_calc = TRUE, species = "mouse", sample_type = "in vivo", isolation = "LP-FACS", sequencing = "mcSCRB-seq", mapping = "zUMIs", datatype = "UMIs", doi = "doi:12345", other_meta = NA)
  ```
  
  7. Analyze your data however you choose (for example in `ggplot2`). Note - it is incredibly straightforward to analyze your data alongside all of the other datasets in our meta-analysis. Simply run `combined_datasets = rbind(combined_datasets, wonderful_temp`, where `wonderful_temp` was the output from Step 6. In fact, `combined_datasets` was actually constructed exactly this way, running `data_qc()` on every dataset we found!
