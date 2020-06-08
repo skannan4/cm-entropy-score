@@ -6,9 +6,9 @@ Transcriptomic entropy, quantified from single cell RNA-sequencing (scRNA-seq) d
 ### Data
 The following relevant files can be downloaded at our [Synapse](https://www.synapse.org/#!Synapse:syn21788425/files/):
 
-- `clean_031020.RData`: An R workspace containing all of the counts tables for all datasets analysed in our manuscript, the computed QC metrics/entropy scores/other relevant metadata for all datasets, and all functions used in our manuscript. Please note that this file is very large and may require significant RAM to load and work off of. We recommend 32GB RAM for handling this file.
+- `clean_060720.RData`: An R workspace containing all of the counts tables for all datasets analysed in our manuscript, the computed QC metrics/entropy scores/other relevant metadata for all datasets, and all functions used in our manuscript. Please note that this file is very large and may require significant RAM to load and work off of. We recommend 32GB RAM for handling this file.
 
-- `clean_nodatasets_031020.RData`: An R workspace containing all of the computed QC metrics/entropy scores as well as functions used in the manuscript, but not the counts tables. This file cannot be used to reproduce every figure in the manuscript. However, it may be useful for those with lower RAM availability, and can be used to run entropy score on user datasets.
+- `clean_nodatasets_060720.RData`: An R workspace containing all of the computed QC metrics/entropy scores as well as functions used in the manuscript, but not the counts tables. This file cannot be used to reproduce every figure in the manuscript. However, it may be useful for those with lower RAM availability, and can be used to run entropy score on user datasets.
 
 - `supp_files.zip`: Zip file containing two folders (Fig02_data and Fig04_data) with some necessarily files for replicating a handful of the figures.
 
@@ -17,12 +17,12 @@ The following relevant files can be found here:
 
 - `entropy_functions.R`: An R file containing code for all of the relevant functions for entropy score. Please note that these functions have been loaded into both of the above workspaces as well.
 
-- `entropy_figures.R`: A R file containing code necessary to reproduce all figures in the manuscript. Please note that many of the figures will require `clean_031020.Rdata`.
+- `entropy_figures.R`: A R file containing code necessary to reproduce all figures in the manuscript. Please note that many of the figures will require `clean_060720.Rdata`.
 
 - `helper_code.R`: An R file containing some miscellaneous helper codes that were beneficial throughout the project.
 
 ### Important objects in the workspaces
-In addition to the counts tables in `clean_021020.Rdata`, the workspaces have several other objects of interest. Many are related specifically to the functions, and their use is detailed in `entropy_functions.R`. However, two dataframes may be of particular interest to users:
+In addition to the counts tables in `clean_060720.Rdata`, the workspaces have several other objects of interest. Many are related specifically to the functions, and their use is detailed in `entropy_functions.R`. However, two dataframes may be of particular interest to users:
 
 - `alldata`: This contains the metadata for every dataset that we analyzed. It was also used to generate the Supplementary Tables in the manuscript. Readers looking for details about datasets should look here.
 
@@ -34,9 +34,9 @@ Most of the libraries used in our codebase can be found from CRAN or Bioconducto
 ### How to replicate figures in our manuscript
 To replicate the figures in our manuscript, please follow these steps:
 
-1. Download `clean_031020.Rdata`, `entropy_figures.R`, and `supp_files.zip`.
+1. Download `clean_060720.Rdata`, `entropy_figures.R`, and `supp_files.zip`.
 
-2. Load `clean_031020.Rdata` into R or your IDE of choice.
+2. Load `clean_060720.Rdata` into R or your IDE of choice.
 
 3. Extract `supp_files.zip` to a folder of your choice.
 
@@ -53,7 +53,7 @@ Entropy score is relatively straightforward to use and should extend robustly to
 
 1. Make sure you have SingleCellNet installed.
 
-2. Download one of `clean_031020.Rdata` or `clean_nodatasets_031020.Rdata` and load into R - all of the necessary functions have been already loaded in these workspaces. The latter may be helpful for those with memory limitations or just looking to rapidly test entropy score on their dataset. If you would like more details about each function, please download `entropy_functions.R`.
+2. Download one of `clean_060720.Rdata` or `clean_nodatasets_060720.Rdata` and load into R - all of the necessary functions have been already loaded in these workspaces. The latter may be helpful for those with memory limitations or just looking to rapidly test entropy score on their dataset. If you would like more details about each function, please download `entropy_functions.R`.
 
 3. Load and format your dataset appropriately. You will need, at minimum, the following: a counts table where the rows are gene names (in gene symbol format) and the columns are cellnames; a vector containing all of the timepoints of your cells (in the same order as your columns in the counts table, but doesn't need to be named). Other metadata about the study may also be helpful, but is unnecessary.
 
