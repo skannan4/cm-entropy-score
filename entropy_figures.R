@@ -1,7 +1,7 @@
 #Transcriptomic entropy enables quantification of cardiomyocyte maturation at single cell level
 #Chulan Kwon Laboratory
 #Primary author: Suraj Kannan
-#February 18,2020
+#August 05, 2020
 #Document: Figures
 
 #All necessary import files will be in this folder
@@ -13,9 +13,10 @@ library(DropletUtils)
 library(grid)
 library(stringr)
 library(monocle)
+library(dplyr)
 
 #So initially, the figures here were made with my computer screen in mind. As it turns out, with svg formatting, it is better to start small and then go bigger, rather than the other way around. Thus, the size of everything needed to be changed. The fig_factor below allows for this - if set to 1, the figures will be appropriate for a computer screen/ppt. If set to 2.5, they will be appropriate for the manuscript.
-fig_factor = 1
+fig_factor = 2.5
 
 #####Fig 01
 #This figure computes the raw Shannon entropy on our reference data. This uses the oldest version of our entropy function, which has no gene filtering, no subselection of top genes, and also includes none of our QC (filtering out poor quality cells, filtering out non-CMs etc). We define and run this function here (in all its original glory as written by Michael Farid) but remove it subsequently since we never use it again.
@@ -240,7 +241,7 @@ ggplot(combined_datasets[combined_datasets$max_celltype == "cardiac muscle cell"
 ###Fig 08a
 ggplot(combined_datasets[combined_datasets$full_label == "mouse in vivo" & combined_datasets$good_cell == TRUE, ], aes(x = timepoint, y = mito, fill = study, color = (reason != "high mitochondrial percentage" | is.na(reason)))) + geom_violin(scale = "width", position = position_dodge(width = 1), lwd =  1/fig_factor) + geom_boxplot(position = position_dodge(width = 1), lwd = 1/fig_factor, outlier.size = 1.5/fig_factor) + xlab("Timepoint") + ylab("Mito %") + theme_linedraw() + theme(axis.title = element_text(size = 24/fig_factor), axis.text = element_text(size = 18/fig_factor), axis.text.x = element_text(angle = 45), legend.title = element_text(size = 24/fig_factor), legend.text = element_text(size = 12/fig_factor),  legend.key.size = unit(1.2/fig_factor, "lines")) + scale_fill_discrete(name = "Study") + guides(fill = guide_legend(ncol = 1)) + scale_color_manual(guide = FALSE, values = c("red", "black"))
 
-###Fig 08b
+w###Fig 08b
 ggplot(combined_datasets[combined_datasets$full_label == "mouse in vivo" & combined_datasets$good_cell == TRUE & (combined_datasets$reason != "high mitochondrial percentage" | is.na(combined_datasets$reason)), ], aes(x = timepoint, y = mito, fill = study)) + geom_violin(scale = "width", position = position_dodge(width = 1), lwd =  1/fig_factor) + geom_boxplot(position = position_dodge(width = 1), lwd = 1/fig_factor, outlier.size = 1.5/fig_factor) + xlab("Timepoint") + ylab("Mito %") + theme_linedraw() + theme(axis.title = element_text(size = 24/fig_factor), axis.text = element_text(size = 18/fig_factor), axis.text.x = element_text(angle = 45), legend.title = element_text(size = 24/fig_factor), legend.text = element_text(size = 12/fig_factor), legend.key.size = unit(1.2/fig_factor, "lines")) + scale_fill_discrete(name = "Study") + guides(fill = guide_legend(ncol = 1))
 
 ###Fig 08c
@@ -433,7 +434,7 @@ supp.labs = c("In Vivo", "Directed Differentiation")
 names(supp.labs) = c("in vivo", "directed differentiation")
 
 ###Fig 12a
-ggplot(combined_datasets[combined_datasets$species == "human" & combined_datasets$good_cell == TRUE & combined_datasets$genes > 1000 & combined_datasets$include_dataset == TRUE & !combined_datasets$timepoint %in% c("D0", "D2", "D5"), ], aes(x = timepoint, y = entropy, fill = study)) + geom_violin(scale = "width", position = position_dodge(width = 1), lwd =  1/fig_factor) + geom_boxplot(position = position_dodge(width = 1), lwd = 1/fig_factor, outlier.size = 1.5/fig_factor) + xlab("Timepoint") + ylab("Entropy Score") + theme_linedraw() + theme(axis.title = element_text(size = 24/fig_factor), axis.text = element_text(size = 16/fig_factor), axis.text.x = element_text(angle = 45), legend.title = element_text(size = 24/fig_factor), legend.text = element_text(size = 12/fig_factor), strip.text = element_text(size = 16/fig_factor), legend.key.size = unit(1.2/fig_factor, "lines")) + scale_fill_discrete(name = "Study") + guides(fill = guide_legend(ncol = 1)) + facet_grid(~sample_type, scales = "free_x", space = "free_x", labeller = labeller(sample_type = supp.labs)) # I don't know why D0-5 cells make it past SCN filter, but we just kick them out
+ggplot(combined_datasets[combined_datasets$species == "human" & combined_datasets$good_cell == TRUE & combined_datasets$genes > 1000 & combined_datasets$include_dataset == TRUE & !combined_datasets$timepoint %in% c("D0", "D2", "D5"), ], aes(x = timepoint, y = entropy, fill = str_wrap(study, width = 34))) + geom_violin(scale = "width", position = position_dodge(width = 1), lwd =  1/fig_factor) + geom_boxplot(position = position_dodge(width = 1), lwd = 1/fig_factor, outlier.size = 1.5/fig_factor) + xlab("Timepoint") + ylab("Entropy Score") + theme_linedraw() + theme(axis.title = element_text(size = 24/fig_factor), axis.text = element_text(size = 16/fig_factor), axis.text.x = element_text(angle = 45), legend.title = element_text(size = 24/fig_factor), legend.text = element_text(size = 12/fig_factor), strip.text = element_text(size = 16/fig_factor), legend.key.size = unit(1.2/fig_factor, "lines")) + scale_fill_discrete(name = "Study") + guides(fill = guide_legend(ncol = 1)) + facet_grid(~sample_type, scales = "free_x", space = "free_x", labeller = labeller(sample_type = supp.labs)) # I don't know why D0-5 cells make it past SCN filter, but we just kick them out
 
 rm(supp.labs)
 
@@ -505,7 +506,7 @@ median(umi_ratio$ratio)
 rm(umi_ratio, umi_ratio1, umi_ratio2, umi_ratio3, umi_ratio4)
 
 #####Fig 16
-#This figure shows integration of five perinatal datasets using functionality in Seurat V3. The code is adapted from the following Seurat vigneete: https://satijalab.org/seurat/v3.1/integration.html. The purpose of this figure was to demonstrate that, even following integration, CMs aren't always well-aggregated by timepoint, suggesting persistent batch effects. Despite this, entropy score is still able to capture the appropriate maturation status. We used these five datasets: 10x Chromium, Duan 10x, Kannan Reference, Murphy, and Tabula Muris Senis (because they all had overlap around the perinatal timepoints). We used the SCTransform method, but set the Kannan reference as the reference dataset. The rationale was to mimic a sort of alternative approach to predicting maturation status, whereby test datasets are projected onto a reference (such as our maturation reference) and then assigned some metric.
+#This figure shows integration of five perinatal datasets using functionality in Seurat V3. The code is adapted from the following Seurat vignette: https://satijalab.org/seurat/v3.1/integration.html. The purpose of this figure was to demonstrate that, even following integration, CMs aren't always well-aggregated by timepoint, suggesting persistent batch effects. Despite this, entropy score is still able to capture the appropriate maturation status. We used these five datasets: 10x Chromium, Duan 10x, Kannan Reference, Murphy, and Tabula Muris Senis (because they all had overlap around the perinatal timepoints). We used the SCTransform method, but set the Kannan reference as the reference dataset. The rationale was to mimic a sort of alternative approach to predicting maturation status, whereby test datasets are projected onto a reference (such as our maturation reference) and then assigned some metric.
 
 makeSeurat = function(data){
   good_cells = combined_datasets[combined_datasets$data == data & combined_datasets$good_cell == TRUE, ]$cellname
@@ -521,10 +522,13 @@ murphy_seurat = makeSeurat("murphy_data")
 duan_seurat = makeSeurat("duan10_data")
 chromium_seurat = makeSeurat("chromium_data")
 tabula_seurat = makeSeurat("tabula_data")
+wang_dev_seurat = makeSeurat("wang_dev_data")
+
+
 
 #To run this code, you may need quite a bit of RAM (see the changed settings to future).
 options(future.globals.maxSize = 1500 * 1024^2)
-heart.list = list(kannan_ref_seurat, murphy_seurat, duan_seurat, chromium_seurat, tabula_seurat)
+heart.list = list(kannan_ref_seurat, murphy_seurat, wang_dev_seurat, chromium_seurat, tabula_seurat)
 for (i in 1:length(heart.list)) {
   heart.list[[i]] <- SCTransform(heart.list[[i]], verbose = FALSE)
 }
@@ -550,4 +554,121 @@ DimPlot(heart.integrated, reduction = "umap", group.by = "study", pt.size = 2/fi
 #Note - I was too lazy to format this figure (would have to handle each ggplot individually and it wasn't worth it)
 FeaturePlot(heart.integrated, features = c("Tnni3", "mt-Co1", "Ckmt2", "Cdk1"))
 
-rm(heart.list, heart.features, heart.anchors, heart.integrated, kannan_ref_seurat, duan10_data, chromium_seurat, murphy_seurat, tabula_seurat, makeSeurat)
+rm(heart.list, heart.features, heart.anchors, heart.integrated, kannan_ref_seurat, duan10_seurat, chromium_seurat, murphy_seurat, tabula_seurat, makeSeurat)
+
+#In the latest version of the manuscript, we approached this issue in a different way - instead of aggregating multiple datasets at once, we combined datasets one at a time to the reference dataset. We used mnnCorrect (implemented in Monocle3) for this.
+
+library(monocle3) #Loading here locally since we loaded Monocle 2 earlier
+
+#Function to quickly make a Monocle object from one dataset
+makeMonocle = function(data){
+  good_cells = combined_datasets[combined_datasets$data == data & combined_datasets$good_cell == TRUE, ]$cellname
+  tab = mito_correct(get(data)[, good_cells])
+  meta.data = combined_datasets[combined_datasets$data == data & combined_datasets$good_cell == TRUE, ]
+  colnames(tab) = paste(good_cells, data, sep = "_")
+  rownames(meta.data) = paste(good_cells, data, sep = "_")
+  return(new_cell_data_set(tab, cell_metadata = meta.data, gene_metadata = data.frame(row.names = rownames(tab), gene1 = rownames(tab), gene2 = rownames(tab))))
+}
+
+#Function to quickly combine two datasets into one Monocle object
+makeCombinedMonocle = function(data1, data2){
+  good_cells = combined_datasets[combined_datasets$data == data1 & combined_datasets$good_cell == TRUE, ]$cellname
+  tab = mito_correct(get(data1)[, good_cells])
+  meta.data = combined_datasets[combined_datasets$data == data1 & combined_datasets$good_cell == TRUE, ]
+  colnames(tab) = paste(good_cells, data1, sep = "_")
+  rownames(meta.data) = paste(good_cells, data1, sep = "_")
+  
+  good_cells2 = combined_datasets[combined_datasets$data == data2 & combined_datasets$good_cell == TRUE, ]$cellname
+  tab2 = mito_correct(get(data2)[, good_cells2])
+  meta.data2 = combined_datasets[combined_datasets$data == data2 & combined_datasets$good_cell == TRUE, ]
+  colnames(tab2) = paste(good_cells2, data2, sep = "_")
+  rownames(meta.data2) = paste(good_cells2, data2, sep = "_")
+  
+  tab = tab[rownames(tab) %in% rownames(tab2), ]
+  tab2 = tab2[rownames(tab), ]
+  
+  return(new_cell_data_set(cbind(tab, tab2), cell_metadata = rbind(meta.data, meta.data2), gene_metadata = data.frame(row.names = rownames(tab), gene1 = rownames(tab), gene2 = rownames(tab))))
+}
+
+#Make Monocle object with just reference data
+cds_invivo = makeMonocle("kannan_ref_data")
+cds_invivo <- preprocess_cds(cds_invivo, num_dim = 5)
+cds_invivo <- align_cds(cds_invivo)
+cds_invivo <- reduce_dimension(cds_invivo) 
+
+###Fig16d
+plot_cells(cds_invivo, label_groups_by_cluster = FALSE, label_cell_groups = FALSE, color_cells_by = "timepoint", cell_size = 2/fig_factor, show_trajectory_graph = FALSE) + xlab("Component 1") + ylab("Component 2") + theme_linedraw() + theme(axis.title = element_text(size = 24/fig_factor), axis.text = element_text(size = 18/fig_factor), legend.title = element_text(size = 24/fig_factor), legend.text = element_text(size = 12/fig_factor), legend.key.size = unit(0.5, 'lines')) + guides(color = guide_legend(title = "Timepoint", override.aes = list(size = 4/fig_factor)), ncol = 2)
+
+#Make Monocle object with reference data and Wang developmental data; this can be replaced with any dataset, but we used this one because it's a very clear case where batch effects aren't well-corrected
+cds_invivo = makeCombinedMonocle("kannan_ref_data", "wang_dev_data")
+cds_invivo <- preprocess_cds(cds_invivo, num_dim = 5)
+cds_invivo <- align_cds(cds_invivo, alignment_group = "data")
+cds_invivo <- reduce_dimension(cds_invivo) 
+
+###Fig16e
+plot_cells(cds_invivo, label_groups_by_cluster = FALSE, label_cell_groups = FALSE, color_cells_by = "timepoint", cell_size = 2/fig_factor, show_trajectory_graph = FALSE) + xlab("Component 1") + ylab("Component 2") + theme_linedraw() + theme(axis.title = element_text(size = 24/fig_factor), axis.text = element_text(size = 18/fig_factor), legend.title = element_text(size = 24/fig_factor), legend.text = element_text(size = 12/fig_factor), legend.key.size = unit(0.5, 'lines')) + guides(color = guide_legend(title = "Timepoint", override.aes = list(size = 4/fig_factor)), ncol = 2)
+
+rm(makeMonocle, makeCombinedMonocle, cds_invivo)
+
+#####Extra Code
+#Here, we show how differences in sensitivity can lead to differences in computed entropy; we use the reference data and Sean's data as examples (e18, p22 from the reference, p21 from Sean).
+subsampling = vector()
+for(study in c("kannan_ref_data", "murphy_data")){
+  for (n in c(50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4500, 5000, 5500, 6000, 6500, 7000)){
+    good_cells = combined_datasets[combined_datasets$data == study & combined_datasets$good_cell == TRUE & combined_datasets$timepoint %in% c("e18", "p21", "p22"), ]$cellname
+    subsampling = rbind(subsampling, data.frame(study = combined_datasets[combined_datasets$data == study & combined_datasets$good_cell == TRUE & combined_datasets$timepoint %in% c("e18", "p21", "p22"), ]$study, timepoint = combined_datasets[combined_datasets$data == study & combined_datasets$good_cell == TRUE & combined_datasets$timepoint %in% c("e18", "p21", "p22"), ]$timepoint, entropy = master_entropy(get(study)[, good_cells], n), n = rep(n, length(good_cells))))
+    print(n)
+  }
+}
+ggplot(subsampling[subsampling$n %in% c(50, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000), ], aes(x = as.factor(n), y = entropy, fill = paste(study, timepoint))) +geom_boxplot() + xlab("Genes") + ylab("Entropy") + theme_linedraw() + theme(axis.title = element_text(size = 24/fig_factor), axis.text = element_text(size = 18/fig_factor), legend.title = element_text(size = 24/fig_factor), legend.text = element_text(size = 12/fig_factor), legend.key.size = unit(0.5, 'lines'), , axis.text.x = element_text(angle = 45)) + guides(fill = guide_legend(title = "Study/Timepoint"))
+
+#For parameter sweep of top genes selection:
+n = c(50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000)
+dat = matrix(nrow = nrow(combined_datasets[combined_datasets$full_label == "mouse in vivo", ]), ncol = 29)
+rownames(dat) = rownames(combined_datasets[combined_datasets$full_label == "mouse in vivo", ])
+for(i in seq(1, 29)){
+  val = numeric()
+  for(d in unique(combined_datasets[combined_datasets$full_label == "mouse in vivo", ]$data)){
+    data = get(d)
+    val = c(val, master_entropy(data, n = n[i]))
+    print(d)
+  }
+  dat[, i] = val
+  print(i)
+}
+colnames(dat) = n
+dat = as.data.frame(dat)
+dat$timepoint = as.numeric(combined_datasets[combined_datasets$full_label == "mouse in vivo", ]$timepoint)
+dat$real_timepoint = combined_datasets[combined_datasets$full_label == "mouse in vivo", ]$timepoint
+dat$data = combined_datasets[combined_datasets$full_label == "mouse in vivo", ]$data
+dat$good_cell = combined_datasets[combined_datasets$full_label == "mouse in vivo", ]$good_cell
+dat$include_dataset = combined_datasets[combined_datasets$full_label == "mouse in vivo", ]$include_dataset
+dat_melt = melt(dat, id.vars = c("timepoint", "good_cell", "include_dataset", "data", "real_timepoint"))
+
+#There are two sets of parameters that we want to optimize. The first is the correlation between timepoint and entropy at different subsamplings. Using individual cell entropies is too noisy, so we use the median for each study/timepoint for each subsampling (done using some dplyr magic).
+median_timepoint_data = dat_melt[dat_melt$good_cell == TRUE & dat_melt$include_dataset == TRUE, ] %>% 
+  group_by(timepoint, data, variable) %>% 
+  summarise(value = median(value))
+spearman_correlations = unlist(lapply(unique(median_timepoint_data$variable), function(x){cor(median_timepoint_data[median_timepoint_data$variable == x, ]$timepoint, median_timepoint_data[median_timepoint_data$variable == x, ]$value, method = "spearman")}))
+spearman_correlations = data.frame(genes = unique(median_timepoint_data$variable), spearman_correlations)
+ggplot(spearman_correlations, aes(x = as.numeric(as.character(genes)), y = -1 * spearman_correlations)) + geom_point() + xlab("Genes") + ylab("-1 * Spearman Correlation") + theme_linedraw() + theme(axis.title = element_text(size = 24/fig_factor), axis.text = element_text(size = 18/fig_factor), legend.title = element_text(size = 24/fig_factor), legend.text = element_text(size = 12/fig_factor), legend.key.size = unit(0.5, 'lines'))
+
+
+#The second parameter is the maximum normalized variance across timepoints. Because entropy does not scale linearly as genes decrease/increase, at low numbers of genes the dynamic range of the score will decrease. This means that cells will appear to be more similar to each other than they are. We can compute this by first normalizing the entropy scores at each subsampling to [0, 1], and then computing the variance. Higher variance indicates a better dynamic range.
+max_per_subsampling = dat_melt[dat_melt$good_cell == TRUE & dat_melt$include_dataset == TRUE, ] %>% 
+  group_by(variable) %>% 
+  summarise(value = max(value))
+min_per_subsampling = dat_melt[dat_melt$good_cell == TRUE & dat_melt$include_dataset == TRUE, ] %>% 
+  group_by(variable) %>% 
+  summarise(value = min(value))
+rownames(max_per_subsampling) = max_per_subsampling$variable
+rownames(min_per_subsampling) = min_per_subsampling$variable
+dat_melt$new_value = (dat_melt$value - min_per_subsampling[as.character(dat_melt$variable), ]$value)/max_per_subsampling[as.character(dat_melt$variable), ]$value
+normalized_median_timepoint = dat_melt[dat_melt$good_cell == TRUE & dat_melt$include_dataset == TRUE, ] %>% 
+  group_by(timepoint, variable) %>% 
+  summarise(value = median(new_value))
+variances = unlist(lapply(unique(normalized_median_timepoint$variable), function(x){var(normalized_median_timepoint[normalized_median_timepoint$variable == x, ]$value)}))
+variances = data.frame(genes = unique(normalized_median_timepoint$variable), variances = variances)
+ggplot(variances, aes(x = as.numeric(as.character(genes)), y = variances)) + geom_point() + xlab("Genes") + ylab("Normalized Variance") + theme_linedraw() + theme(axis.title = element_text(size = 24/fig_factor), axis.text = element_text(size = 18/fig_factor), legend.title = element_text(size = 24/fig_factor), legend.text = element_text(size = 12/fig_factor), legend.key.size = unit(0.5, 'lines'))
+
+rm(dat, dat_melt, max_per_subsampling, median_timepoint_data, min_per_subsampling, normalized_median_timepoint, spearman_correlations, subsa, variances, data, d, i, n, val, study)
