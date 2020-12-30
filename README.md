@@ -1,7 +1,7 @@
 # Transcriptomic entropy quantifies cardiomyocyte maturation at single cell level
 
 ### Introduction
-Transcriptomic entropy, quantified from single cell RNA-sequencing (scRNA-seq) data, can be used to quantify the maturation status of cardiomyocytes (CMs). This may be particularly helpful for assessing the maturation status of pluripotent stem cell-derived CMs (PSC-CMs) and other engineered CM tissues. The rationale and details of our approach can be found in our preprint (add citation when ready). Here, we provide all of the relevant code and workspaces for replicating our figures in the preprint and for using entropy score to analyze your own datasets.
+Transcriptomic entropy, quantified from single cell RNA-sequencing (scRNA-seq) data, can be used to quantify the maturation status of cardiomyocytes (CMs). This may be particularly helpful for assessing the maturation status of pluripotent stem cell-derived CMs (PSC-CMs) and other engineered CM tissues. The rationale and details of our approach can be found in our [preprint](https://www.biorxiv.org/content/10.1101/2020.04.02.022632v3). Here, we provide all of the relevant code and workspaces for replicating our figures in the preprint and for using entropy score to analyze your own datasets.
 
 ### Data
 The following relevant files can be downloaded at our [Synapse](https://www.synapse.org/#!Synapse:syn21788425/files/):
